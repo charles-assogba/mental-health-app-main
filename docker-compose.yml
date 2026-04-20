@@ -1,0 +1,44 @@
+# frontend 8120
+# backend 8130
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8120:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - mental_health_app
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8130:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - mental_health_app
+  db:
+    image: mysql:8.4.0
+    environment:
+      MYSQL_USER: "mental_health_app"
+      MYSQL_ROOT_HOST: "%"
+      MYSQL_ROOT_PASSWORD: "mental_health_app"
+      MYSQL_DATABASE: "mental_health_app"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      start_period: 180s
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mental_health_app
+networks:
+  mental_health_app:
+    driver: bridge
+volumes:
+  db_data:
