@@ -10,7 +10,7 @@ const ApplicationLogoView = () => {
           alt="Mental Health App Logo"
           className="h-8 w-8 object-contain"
         />
-        <span className="font-semibold text-lg hidden sm:inline">Mental AI chatbot</span>
+        <span className="font-semibold text-lg hidden sm:inline">Medical diagnostic AI</span>
       </div>
     </Link>
   );

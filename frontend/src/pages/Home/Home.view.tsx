@@ -63,13 +63,13 @@ const HomeView = () => {
                   variants={fadeUp}
                   className="text-4xl font-extrabold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-teal-600 via-blue-600 to-blue-700 dark:from-teal-400 dark:via-purple-400 dark:to-teal-500"
                 >
-                  Take control of your mental health
+                  Upload your X-Ray picture and get the analysis result now
                 </motion.h1>
                 <motion.p
                   variants={fadeUp}
                   className="max-w-[650px] text-gray-600 dark:text-gray-300 md:text-xl lg:text-lg xl:text-xl leading-relaxed"
                 >
-                 Our app helps you track your mood, practice mindfulness, and build healthy habits with personalized support.
+                 Our app helps you analyse, study, and build medical knowledge.
                 </motion.p>
               </div>
 
@@ -169,7 +169,7 @@ const HomeView = () => {
               >
                 <div className="relative h-full w-full overflow-hidden rounded-2xl bg-background/80 dark:bg-gray-900/80 backdrop-blur-lg">
                   <img
-                    src="/the-new-york-public-library-tBZXYspGH_M-unsplash.jpg"
+                    src="/imageheader.jpg"
                     alt="Mental Health App Interface"
                     width={400}
                     height={500}
@@ -237,7 +237,7 @@ const HomeView = () => {
               },
               {
                 icon: BotMessageSquare,
-                title: "AI Chat Companion",
+                title: "Uploading image",
                 text: "Interactive guidance to analyse the X-Ray image upload",
                 color: vibrantHighlight,
                 lightBg: vibrantHighlightBgLight,
