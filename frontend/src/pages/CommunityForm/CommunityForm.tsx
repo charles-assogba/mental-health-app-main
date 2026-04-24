@@ -2,8 +2,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { client } from "@/config/axiosClient";
-import { AxiosError } from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CommunityFormView from "./CommunityForm.view";
@@ -25,24 +23,9 @@ export default function CommunityForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError("");
-    try {
-      const data: CreatePostResponse = (await client().post("/thread", values))
-        .data;
-
-      toast(data.msg);
-      navigate("/community");
-    } catch (error) {
-      setLoading(false);
-      if (error instanceof AxiosError) {
-        if (error.status == 401) {
-          setError(error.response?.data?.msg || "Terjadi kesalahan.");
-          return;
-        }
-
-        console.log(error.message);
-        toast(error.message);
-      }
-    }
+    toast("Thread created");
+    navigate("/community");
+    setLoading(false);
   };
 
   document.title = "Forum Komunitas - Mental Health App";

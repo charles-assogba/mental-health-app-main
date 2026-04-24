@@ -7,8 +7,6 @@ import {
 } from "./Dashboard.type";
 import DashboardView from "./Dashboard.view";
 import { CheckUserResponse, User } from "@/components/Header/Header.type";
-import { AxiosError } from "axios";
-import { client } from "@/config/axiosClient";
 import { toast } from "sonner";
 
 import { mindfulnessSessions } from "./Dashboard.data";
@@ -192,125 +190,29 @@ export default function Dashboard() {
   };
 
   const addTodo = async (title: string): Promise<Todo | false> => {
-    try {
-      const res: PostTodoResponse = (
-        await client().post("/todos", {
-          title: title,
-          is_completed: false,
-        })
-      ).data;
-
-      return res.payload;
-    } catch (error) {
-      console.error("Add Todo Error:", error);
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          toast.error("Authentication failed. Please log in again.");
-          setUser(null);
-        } else {
-          toast.error(
-            error.response?.data?.msg || error.message || "Failed to add todo"
-          );
-        }
-      } else {
-        toast.error("An unexpected error occurred while adding todo.");
-      }
-      return false;
-    }
+    return {
+      id: Date.now(),
+      title,
+      is_completed: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
   };
 
   const deleteTodo = async (id: string | number) => {
-    try {
-      await client().delete(`/todos/${id}`);
-      toast.success("To-Do deleted successfully.");
-      return true;
-    } catch (error) {
-      console.error("Delete Todo Error:", error);
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          toast.error("Authentication failed. Please log in again.");
-          setUser(null);
-        } else {
-          toast.error(
-            error.response?.data?.msg ||
-              error.message ||
-              "Failed to delete todo"
-          );
-        }
-      } else {
-        toast.error("An unexpected error occurred while deleting todo.");
-      }
-      return false;
-    }
+    return true;
   };
 
   const updateTodo = async (id: string | number, data: Partial<Todo>) => {
-    try {
-      await client().put(`/todos/${id}`, data);
-    } catch (error) {
-      console.error("Update Todo Error:", error);
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          toast.error("Authentication failed. Please log in again.");
-          setUser(null);
-        } else {
-          toast.error(
-            error.response?.data?.msg ||
-              error.message ||
-              "Failed to update todo"
-          );
-        }
-      } else {
-        toast.error("An unexpected error occurred while updating todo.");
-      }
-    }
+    // Do nothing
   };
 
   const fetchTodos = async () => {
-    try {
-      const res: GetTodosResponse = (await client().get("/todos")).data;
-
-      if (res?.payload?.todos && Array.isArray(res.payload.todos)) {
-        setTodos(res.payload.todos);
-      } else {
-        console.warn("Received unexpected data format for todos:", res);
-        setTodos([]);
-      }
-    } catch (error) {
-      console.error("Fetch Todos Error:", error);
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          setUser(null);
-        } else {
-          console.error("Failed to fetch todos:", error.message);
-        }
-      } else {
-        console.error("An unexpected error occurred while fetching todos.");
-      }
-      setTodos([]);
-    }
+    setTodos([]);
   };
 
   const fetchUser = async () => {
-    try {
-      const data: CheckUserResponse = (await client().get("/auth/check")).data;
-      setUser(data.payload);
-    } catch (error) {
-      console.error("Fetch User Error:", error);
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          setUser(null);
-          toast.info("Please log in to continue.");
-        } else {
-          console.error("Failed to check user status:", error.message);
-        }
-      } else {
-        console.error(
-          "An unexpected error occurred while checking user status."
-        );
-      }
-      setUser(null);
-    }
+    setUser(null);
   };
 
   const handleDeleteTodos = async (id: number) => {

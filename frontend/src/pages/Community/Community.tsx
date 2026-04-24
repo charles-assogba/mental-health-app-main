@@ -8,7 +8,6 @@ import {
   Thread,
   Pagination,
 } from "./Community.type";
-import { client } from "@/config/axiosClient";
 import { toast } from "sonner";
 import { useUser } from "@/components/Header/Header.context";
 
@@ -27,32 +26,10 @@ export default function Community() {
   const fetchThreads = async (page: number) => {
     setThreads([]);
     setPaginationData(null);
-
-    try {
-      const response = await client().get("/thread", {
-        params: { page: page },
-      });
-      const data: FetchThreadResponse = response.data;
-
-      setThreads(data.payload.threads);
-      setPaginationData(data.payload.pagination);
-    } catch (error) {
-      console.error("Error fetching threads:", error);
-      toast.error("Gagal memuat thread diskusi.");
-      setPaginationData(null);
-      setThreads([]);
-    }
   };
 
   const fetchUsers = async () => {
-    try {
-      const data: GetAllUserResponse = (await client().get("/user/all-users"))
-        .data;
-
-      setUsers(data.payload.users);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
+    setUsers([]);
   };
 
   useEffect(() => {

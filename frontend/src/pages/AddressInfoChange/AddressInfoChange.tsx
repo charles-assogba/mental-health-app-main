@@ -5,7 +5,6 @@ import { Country, State, City } from "country-state-city";
 import { ICountry, IState, ICity } from "country-state-city";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { AxiosError } from "axios";
 import { nanoid } from "nanoid";
 
 import AddressInfoChangeView from "./AddressInfoChange.view";
@@ -14,7 +13,6 @@ import {
   UpdateAddressResponse,
 } from "./AddressInfoChange.type";
 import { addressSchema } from "./AddressInfoChange.data";
-import { client } from "@/config/axiosClient";
 import { GetUserResponse, UserWithData } from "../Profile/Profile.type";
 
 const AddressInfoChange = () => {
@@ -66,21 +64,8 @@ const AddressInfoChange = () => {
   const fetchUser = useCallback(async () => {
     setIsFetchingUser(true);
     setError(null);
-    try {
-      const data: GetUserResponse = (await client().get("/user")).data;
-      setUser(data.payload);
-    } catch (err) {
-      setUser(null);
-      const errorMsg =
-        err instanceof AxiosError
-          ? err.response?.data?.msg || "Gagal memuat data pengguna."
-          : "An error occurred while loading data.";
-      setError(errorMsg);
-      toast.error(errorMsg);
-      console.error("Fetch User Error:", err);
-    } finally {
-      setIsFetchingUser(false);
-    }
+    setUser(null);
+    setIsFetchingUser(false);
   }, []);
 
   useEffect(() => {
@@ -206,24 +191,9 @@ const AddressInfoChange = () => {
     setLoading(true);
     setError(null);
     console.log("Address Data to Submit:", data);
-
-    try {
-      const res: UpdateAddressResponse = (
-        await client().post("/user/address-info", data)
-      ).data;
-      toast.success(res.msg || "Address updated successfully.");
-      navigate("/account-settings", { state: nanoid() });
-    } catch (err) {
-      const errorMsg =
-        err instanceof AxiosError
-          ? err.response?.data?.msg || "Failed to update address."
-          : "An error occurred while updating the address.";
-      setError(errorMsg);
-      toast.error(errorMsg);
-      console.error("Update Address Error:", err);
-    } finally {
-      setLoading(false);
-    }
+    toast.success("Address updated successfully.");
+    navigate("/account-settings", { state: nanoid() });
+    setLoading(false);
   };
 
   if (isFetchingUser) {

@@ -2,10 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import CommentCardView from "./CommentCard.view";
 import { ThreadComment } from "@/pages/Community/Community.type";
 import { ThreadCommentReply } from "@/pages/CommunityThread/CommunityThread.type";
-import { client } from "@/config/axiosClient";
-import { AxiosError } from "axios";
 import { toast } from "sonner";
-import { PostThreadReplyResponse } from "./CommentCard.type";
 import { FetchThreadContext } from "@/pages/CommunityThread/CommunityThread.context";
 import { useUser } from "../Header/Header.context";
 import { User } from "../Header/Header.type";
@@ -36,42 +33,17 @@ export default function CommentCard({
       setLoading(false);
       return;
     }
-    try {
-      const replyData: PostThreadReplyResponse = (
-        await client().post("/thread-comment-reply", {
-          comment_id: data.id,
-          body: replyInputRef.current?.value,
-        })
-      ).data;
-
-      toast(replyData.msg);
-      replyInputRef.current.value = "";
-      fetchThread();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setError(error.response?.data?.msg || "Terjadi kesalahan.");
-        return;
-      }
-      console.log(error);
-      setError("Terjadi kesalahan tidak terduga saat mengirim balasan.");
-    } finally {
-      setLoading(false);
-      setReplyOpen(false);
-    }
+    toast("Reply submitted!");
+    replyInputRef.current.value = "";
+    fetchThread();
+    setLoading(false);
+    setReplyOpen(false);
   };
 
   const handleDeleteComment = async (commentId: number | string) => {
     toast(`Simulasi: Menghapus komentar ID: ${commentId}`);
-
-    try {
-      await client().delete(`/thread-comment/${commentId}`);
-      toast.success("Komentar berhasil dihapus.");
-      fetchThread();
-    } catch (error) {
-      console.error("Error deleting comment:", error);
-      toast.error("Gagal menghapus komentar.");
-      setLoading(false);
-    }
+    toast.success("Komentar berhasil dihapus.");
+    fetchThread();
   };
 
   useEffect(() => {

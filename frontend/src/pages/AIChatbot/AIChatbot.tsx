@@ -9,8 +9,6 @@ import {
   GeminiContentType,
   NewConvoResponse,
 } from "./AIChatbot.type";
-import { client } from "@/config/axiosClient";
-import { AxiosError } from "axios";
 import { toast } from "sonner";
 
 export default function AIChatbot() {
@@ -60,43 +58,11 @@ export default function AIChatbot() {
   }, [activeChatId]);
 
   const fetchConvos = async () => {
-    try {
-      const res: GetConversationsResponse = (
-        await client().get("/ai-Conversation")
-      ).data;
-      setConversations(res.payload.conversations);
-    } catch (error) {
-      console.error("Failed to fetch conversations:", error);
-      if (error instanceof AxiosError) {
-        toast.error(error.message || "Failed to load conversation list.");
-      } else {
-        toast.error("Failed to load conversation list.");
-      }
-    }
+    setConversations([]);
   };
 
   const fetchChatByConvo = async (id: string | number) => {
-    if (typeof id !== "number") {
-      console.warn("fetchChatByConvo called with non-numeric ID:", id);
-      return;
-    }
-    console.log(`Fetching messages for convo ID: ${id}`);
-    try {
-      const res: GetChatsByConversationResponse = (
-        await client().get(`/ai-chat/conversation/${id}`)
-      ).data;
-      setMessages(res.payload.chats);
-    } catch (error) {
-      console.error(`Failed to fetch chats for convo ID ${id}:`, error);
-      setMessages([]);
-      if (error instanceof AxiosError) {
-        toast.error(
-          error.message || `Failed to load messages for conversation ${id}.`
-        );
-      } else {
-        toast.error(`Failed to load messages for conversation ${id}.`);
-      }
-    }
+    setMessages([]);
   };
 
   const handleSendMessage = async () => {
@@ -130,63 +96,21 @@ export default function AIChatbot() {
     setInputValue("");
     setIsBotTyping(true);
 
-    try {
-      await client().post(`/ai-chat/conversation/${currentChatId}`, {
-        role: "USER",
-        body: trimmedInput,
-      });
+    // Mock AI response
+    setTimeout(() => {
+      const aiResponseBody = "I'm sorry, but I'm currently offline. Please try again later.";
 
-      const formattedMsg: GeminiContentType[] = updatedMessages.map((msg) => ({
-        role: msg.role === "AI" ? "model" : "user",
-        parts: [{ text: msg.body }],
-      }));
+      const botResponse: Chat = {
+        id: Date.now() + 1,
+        body: aiResponseBody,
+        role: "AI",
+        created_at: new Date(),
+        ai_conversation_id: currentChatId,
+      };
 
-      const res: GeminiChatResponse = (
-        await client().post("/gemini-ai/chat", {
-          conversation_id: currentChatId,
-          content: formattedMsg,
-        })
-      ).data;
-
-      const aiResponseBody = res.payload?.response;
-
-      if (
-        !aiResponseBody ||
-        typeof aiResponseBody !== "string" ||
-        aiResponseBody.trim() === ""
-      ) {
-        console.warn("AI returned an empty or invalid response body.");
-        toast.error("AI did not provide a valid response.");
-      } else {
-        await client().post(`/ai-chat/conversation/${currentChatId}`, {
-          role: "AI",
-          body: aiResponseBody,
-        });
-
-        const botResponse: Chat = {
-          id: Date.now() + 1,
-          body: aiResponseBody,
-          role: "AI",
-          created_at: new Date(),
-          ai_conversation_id: currentChatId,
-        };
-
-        setMessages((prevMessages) => [...prevMessages, botResponse]);
-      }
-    } catch (error) {
-      toast.error("Failed to send or receive AI response.");
-      if (error instanceof AxiosError) {
-        console.error("API Error:", error.response?.data || error.message);
-        toast.error(
-          error?.response?.data?.msg || error.message || "Failed to send message"
-        );
-      } else {
-        console.error("Unknown Error:", error);
-        toast.error("An unexpected error occurred.");
-      }
-    } finally {
+      setMessages((prevMessages) => [...prevMessages, botResponse]);
       setIsBotTyping(false);
-    }
+    }, 1000);
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -206,50 +130,28 @@ export default function AIChatbot() {
   const handleNewChat = async () => {
     isSettingUpNewChat.current = true;
 
-    try {
-      console.log("Creating new conversation...");
+    const newConversation: Conversation = {
+      id: Date.now(),
+      title: "New Discussion",
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
 
-      const res: NewConvoResponse = (
-        await client().post("/ai-Conversation", {
-          title: "New Discussion",
-        })
-      ).data;
+    setConversations((prev) => [newConversation, ...prev]);
 
-      const newConversation: Conversation = res.payload;
-      if (!newConversation || typeof newConversation.id !== "number") {
-        throw new Error(
-          "Invalid response received when creating conversation."
-        );
-      }
+    setMessages([
+      {
+        id: Date.now(),
+        body: "Hello! I'm here to help. What's on your mind today?",
+        role: "AI",
+        created_at: new Date(),
+        ai_conversation_id: newConversation.id,
+      },
+    ]);
 
-      console.log(`New conversation created with ID: ${newConversation.id}`);
+    setActiveChatId(newConversation.id);
 
-      setConversations((prev) => [newConversation, ...prev]);
-
-      setMessages([
-        {
-          id: Date.now(),
-          body: "Hello! I'm here to help. What's on your mind today?",
-          role: "AI",
-          created_at: new Date(),
-          ai_conversation_id: newConversation.id,
-        },
-      ]);
-
-      setActiveChatId(newConversation.id);
-
-      console.log(
-        `Active chat ID set to: ${newConversation.id}. Initial message set.`
-      );
-    } catch (error) {
-      console.error("Failed to create new conversation:", error);
-      toast.error("Failed to start new conversation.");
-
-      isSettingUpNewChat.current = false;
-      if (error instanceof AxiosError) {
-        toast.error(error?.response?.data?.msg || error.message);
-      }
-    }
+    isSettingUpNewChat.current = false;
   };
 
   return (

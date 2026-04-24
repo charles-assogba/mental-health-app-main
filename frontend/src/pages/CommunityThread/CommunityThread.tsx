@@ -8,8 +8,6 @@ import {
   Thread,
   ThreadComment,
 } from "./CommunityThread.type";
-import { client } from "@/config/axiosClient";
-import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { FetchThreadContext } from "./CommunityThread.context";
 import { useUser } from "@/components/Header/Header.context";
@@ -28,30 +26,11 @@ export default function CommunityThread() {
   const params = useParams();
 
   const fetchThread = useCallback(async () => {
-    try {
-      const data: FetchThreadDetailResponse = (
-        await client().get(`/thread/${params.id}`)
-      ).data;
-      setThread(data.payload);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.message);
-        toast(error.message);
-      }
-    }
+    setThread(null);
   }, [params.id]);
 
   const fetchAllThreads = async () => {
-    try {
-      const data: FetchAllThreadsResponse = (await client().get(`/thread`))
-        .data;
-      setThreadsList(data.payload.threads);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error.message);
-        toast(error.message);
-      }
-    }
+    setThreadsList([]);
   };
 
   const submitThread = async () => {
@@ -61,27 +40,10 @@ export default function CommunityThread() {
     if (isNaN(parseInt(params.id || ""))) {
       return;
     }
-    try {
-      const data: PostThreadCommentResponse = (
-        await client().post("/thread-comment", {
-          thread_id: parseInt(params.id || ""),
-          body: textarea.current?.value,
-        })
-      ).data;
-
-      toast(data.msg);
-      await fetchThread();
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setError(error.response?.data?.msg || "Terjadi kesalahan.");
-        return;
-      }
-
-      console.log(error);
-    } finally {
-      setLoading(false);
-      setCreateCommentOpen(false);
-    }
+    toast("Comment submitted");
+    await fetchThread();
+    setLoading(false);
+    setCreateCommentOpen(false);
   };
 
   useEffect(() => {

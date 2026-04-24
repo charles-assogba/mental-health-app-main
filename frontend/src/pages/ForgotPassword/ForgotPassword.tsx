@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ForgotPasswordView from "./ForgotPassword.view";
-import { client } from "@/config/axiosClient";
-import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { PasswordlessLoginResponse } from "./ForgotPassword.type";
 
@@ -22,67 +20,21 @@ export default function ForgotPassword() {
     event.preventDefault();
     setError(null);
     setIsLoading(true);
-    try {
-      if (!email || !/\S+@\S+\.\S+/.test(email)) {
-        setError("Mohon masukkan alamat email yang valid.");
-        return;
-      }
-
-      await client().post("/auth/reset-password", {
-        email: email,
-      });
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast(error?.message);
-      }
-    } finally {
-      setIsLoading(false);
-      setEmailSubmitted(true);
-    }
+    setIsLoading(false);
+    setEmailSubmitted(true);
   };
 
   const handleEmailResend = async () => {
     setResendLoading(true);
-    try {
-      await client().post("/auth/reset-password", {
-        email: email,
-      });
-
-      toast("Email reset password berhasil dikirim!");
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast(error?.message);
-      }
-    } finally {
-      setResendLoading(false);
-    }
+    toast("Email reset password berhasil dikirim!");
+    setResendLoading(false);
   };
 
   const verifyResetToken = useCallback(async () => {
-    try {
-      const data: PasswordlessLoginResponse = (
-        await client().post("/auth/verify-reset-password", {
-          token: token,
-        })
-      ).data;
-
-      if (data) {
-        localStorage.setItem("mental-jwt-token", data.payload.accessToken);
-        navigate("/account-settings/change-password");
-        return;
-      }
-
-      console.log("Login failed since token `data` is null");
-      toast("Terjadi kesalahan.");
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.log(error);
-        toast(error?.message);
-      }
+    if (token) {
+      navigate("/account-settings/change-password");
     }
-  }, [navigate, token]);
+  }, [token, navigate]);
 
   useEffect(() => {
     if (token) {

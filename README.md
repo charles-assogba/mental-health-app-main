@@ -1,30 +1,25 @@
-# Mental Health Application (Dicoding DBS Coding Camp Capstone Project) 🧠
+# Medical diagnostic AI Application (Frontend Only) 🧠
 
-[![Project Status](https://img.shields.io/badge/status-completed-brightgreen)]()
 
 ## Project Summary 📝
 
-This application is the final project (capstone) from DBS Coding Camp Dicoding. Built as a companion app, its purpose is to provide support and assistance 🤗 for individuals facing mental health challenges and needing a space for interaction or personal tools.
+This application is a frontend-only medical diagnostic AI companion app, providing a chatbot assistance to help student analyze x-RAY image 🤗 for individuals facing fractures problems .
 
 ## Main Features ✨
 
 The application offers several core features to support users:
 
-1.  **💬 Community Forum:**
-    - Users can create posts (threads) to share stories, problems, or experiences they face.
-    - Other users can respond, provide support, advice, or recommendations on these posts.
-2.  **🎯 Daily Goals (Todos):**
-    - Simple task management feature where users can create, mark as completed, and delete lists of daily goals or activities.
-3.  **🧘 Mindfulness Sessions:**
-    - Provides guided meditation sessions with timers to help users take time for relaxation and focus.
-4.  **🤖 AI Chatbot (Powered by Gemini API):**
-    - AI-based conversation bot that allows users to ask and get information about mental health issues.
-    - _Note:_ Ideally using a self-developed LLM model, but due to time constraints and limitations on the Machine Learning team, we implemented this feature using the available Gemini API.
+1. **💬 Community Forum:**
+   - Users can view and interact with community posts (threads).
 
-## Live Demo Links 🚀
+2. **🎯 Daily Goals (Todos):**
+   - Simple task management feature where users can create, mark as completed, and delete daily goals or activities.
 
-- **Frontend:** 🖥️ [https://mental-health-app.aran8276.site/](https://mental-health-app.aran8276.site/)
-- **Backend API:** ⚙️ [https://api-mental-health-app.aran8276.site/](https://api-mental-health-app.aran8276.site/)
+3. **🧘 Mindfulness Sessions:**
+   - Guided meditation sessions with timers to help users take time for relaxation and focus.
+
+4. **🤖 AI Chatbot (Mock):**
+   - Interactive mock AI-based conversation interface.
 
 ## Technologies Used 🛠️
 
@@ -38,84 +33,90 @@ The application offers several core features to support users:
 - **Routing:** React Router DOM 🛣️
 - **Package Manager:** NPM 📦
 
-### Backend ⚙️
-
-- **Framework:** Express.js 🚂
-- **ORM:** Prisma 🧱
-- **ID Generator:** Nanoid #️⃣
-- **Package Manager:** NPM 📦
-- **Email:** Nodemailer ✉️ (for SMTP)
-- **AI:** Google Gemini API (@google/generative-ai) 🤖
-
-### Database 🗄️
-
-- **DBMS:** MySQL 🐬
-
-### Hosting & DevOps ☁️
-
-- **Containerization:** Docker 🐳 & Docker Compose (with custom Dockerfile)
-- **Server:** Personal PC 🖥️ functioning as server
-- **Tunneling/Exposure:** Cloudflare Zero Trust Tunnel 🛡️ (to forward Docker ports to public domain)
-
 ## Project Structure 📁
 
 ```
 .
-├── backend/
-│   ├── prisma/
-│   │   └── schema.prisma     # Prisma database schema 🧱
-│   ├── src/                  # Backend source code (TypeScript) ⚙️
-│   │   ├── config/           # Configuration (DB, Express, AI, Email) ⚙️
-│   │   ├── controller/       # Request/response logic per feature 🕹️
-│   │   ├── middleware/       # Express middleware (e.g., Authentication) 🛡️
-│   │   ├── routes/           # API endpoint definitions ↔️
-│   │   ├── services/         # Business logic (e.g., Token Service) 🧠
-│   │   ├── utils/            # Supporting utilities 🛠️
-│   │   └── index.ts          # Backend entry point ▶️
-│   ├── .env.example          # Backend environment configuration example 📄
-│   ├── Dockerfile            # Docker build instructions for backend 🐳
-│   ├── docker-entrypoint.sh  # Docker entry point script 📜
-│   ├── package.json          # Backend dependencies 📦
-│   └── tsconfig.json         # Backend TypeScript configuration ⚙️
 ├── frontend/
 │   ├── public/               # Static assets 🖼️
 │   ├── src/                  # Frontend source code (TypeScript/TSX) 🎨
 │   │   ├── components/       # Reusable UI components 🧩
-│   │   ├── config/           # Configuration (e.g., Axios client) ⚙️
 │   │   ├── layouts/          # Page layout structures 📐
 │   │   ├── lib/              # Frontend utility functions 🛠️
 │   │   ├── pages/            # Main page components 📄
-│   │   ├── viewports/        # Viewport-related components (e.g., Navigator) 🧭
+│   │   ├── viewports/        # Viewport-related components 🧭
 │   │   ├── App.tsx           # Application root component ✨
 │   │   ├── main.tsx          # Frontend entry point ▶️
 │   │   └── index.css         # Global styling (Tailwind base) 🎨
-│   ├── .env                  # Frontend environment configuration (DO NOT COMMIT DIRECTLY! ⚠️)
-│   ├── .env.example          # Frontend environment configuration example 📄
-│   ├── Dockerfile            # Docker build instructions for frontend (via Nginx) 🐳
 │   ├── index.html            # Main HTML template 🌐
 │   ├── package.json          # Frontend dependencies 📦
 │   ├── tsconfig.json         # Frontend TypeScript configuration ⚙️
-│   └── vite.config.ts        # Vite configuration ⚡
-├── nginx/
-│   └── nginx.conf            # Nginx configuration to serve frontend 🌐
-└── docker-compose.yml        # Docker Compose configuration (Frontend, Backend, DB) 🐳
+│   ├── tsconfig.app.json     # Frontend TypeScript app configuration ⚙️
+│   ├── tsconfig.node.json    # Node TypeScript configuration ⚙️
+│   ├── vite.config.ts        # Vite configuration ⚡
+│   ├── eslint.config.js      # ESLint configuration 🔍
+│   └── components.json       # Shadcn UI components configuration 🧩
+├── ml-dataset/               # Machine learning dataset 🤖
+└── README.md                 # This file 📖
 ```
 
-## How to Replicate This Project 📖
+## How to Run This Project 🚀
 
-There are two main ways to run this project in your local environment: using Docker (recommended for ease) or manually.
+### Prerequisites 📋
 
-### Option 1: Using Docker 🐳 (Recommended 👍)
+- Node.js (v16 or higher) 📦
+- NPM (v7 or higher) 📦
 
-This method will build and run containers for frontend (served by Nginx), backend (Express.js), and database (MySQL) simultaneously.
+### Installation & Running 🔧
 
-1.  **Prerequisites:** Ensure Docker and Docker Compose are installed on your system. 🔧
-2.  **Clone Repository:** 📥
-    ```bash
-    git clone <YOUR_REPOSITORY_URL>
-    cd <REPOSITORY_FOLDER_NAME>
-    ```
-3.  **Configure Environment Variables:** ⚙️
+1. **Clone the Repository:** 📥
+   ```bash
+   git clone <YOUR_REPOSITORY_URL>
+   cd <REPOSITORY_FOLDER_NAME>
+   ```
+
+2. **Install Dependencies:** 📦
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+3. **Start Development Server:** ▶️
+   ```bash
+   npm run dev
+   ```
+
+   The application will be available at `http://localhost:5173`
+
+4. **Build for Production:** 🏗️
+   ```bash
+   npm run build
+   ```
+
+   The optimized production build will be in the `dist/` folder.
+
+## Available Scripts 📝
+
+In the `frontend` directory, you can run:
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint to check code quality
+
+## Notes 📌
+
+- This is a **frontend-only application** with mock data and no backend connectivity.
+- All data is stored locally in the browser (localStorage).
+- The application is fully functional for demonstration and development purposes.
+
+## License 📜
+
+This project is part of Charles and Adeham Coding Camp Project.
+
+## Support 💬
+
+For issues or questions, please open an issue in the repository.
     - Copy `.env.example` to `.env` inside the `backend/` folder.
       ```bash
       cp backend/.env.example backend/.env
@@ -214,7 +215,7 @@ GEMINI_API_KEY="<YOUR_GEMINI_API_KEY>"
 DATABASE_URL="mysql://root:mental_health_app@db:3306/mental_health_app"
 
 # Frontend base URL 🌐
-FRONTEND_BASE_URL="http://mental-health-app.aran8276.site"
+FRONTEND_BASE_URL="http://http://localhost:5173/"
 
 # Application state ⚙️
 APP_STATE="production" # "production" || "development"
@@ -263,6 +264,6 @@ The development of this application follows the following workflow:
 8.  **Code Cleanup & Build:** Performing _error checking_, _linting_, and application build testing. 🧹🏗️
 9.  **Deployment:** Setting up and running the application on server using Docker and Cloudflare Tunnel. 🚀☁️
 
-Made by Aran8276 / SMK Negeri 6 Malang (see [other contributors in this repo](https://github.com/Aran8276/mental-health-app/graphs/contributors)).
+Made by Charles and Adeham
 
 ---

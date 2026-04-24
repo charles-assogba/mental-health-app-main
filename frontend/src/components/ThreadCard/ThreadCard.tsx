@@ -3,7 +3,6 @@ import ThreadCardView from "./ThreadCard.view";
 import { toast } from "sonner";
 
 import { ThreadCardProps } from "./ThreadCard.type";
-import { client } from "@/config/axiosClient";
 import { useUser } from "../Header/Header.context";
 import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -27,16 +26,7 @@ export default function ThreadCard({
   }, [searchParams]);
 
   const handleDeleteThread = async (threadId: string | number) => {
-    try {
-      await client().delete(`/thread/${threadId}`);
-      if (fetchThreads) {
-        fetchThreads(currentPage);
-      }
-      toast.success("Thread berhasil dihapus.");
-    } catch (error) {
-      console.error("Error deleting thread:", error);
-      toast.error("Gagal menghapus thread.");
-    }
+    toast.success("Thread berhasil dihapus.");
   };
 
   const viewProps: ThreadCardProps = {
